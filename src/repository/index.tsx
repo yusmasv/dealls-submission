@@ -30,11 +30,29 @@ function getProductByCategory(category: string) {
         return axios(config);
 }
 
-function getAllCart() {
+function getAllCart(skip: number, limit: number) {
 
     const config = {
         method: 'get',
-        url: `${BASE_URL}/carts`
+        url: `${BASE_URL}/carts?skip=${skip}&limit=${limit}`
+        };
+        return axios(config);
+}
+
+function getUserById(id: number) {
+
+    const config = {
+        method: 'get',
+        url: `${BASE_URL}/user/${id}`
+        };
+        return axios(config);
+}
+
+function getCartById(id: number) {
+
+    const config = {
+        method: 'get',
+        url: `${BASE_URL}/cart/${id}`
         };
         return axios(config);
 }
@@ -43,7 +61,9 @@ export {
     getAllProducts,
     getCategories,
     getProductByCategory,
-    getAllCart
+    getAllCart,
+    getUserById,
+    getCartById
 }
 
 

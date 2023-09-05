@@ -9,6 +9,7 @@ import Dashboard from './pages/dashboard';
 import Cart from './pages/cart';
 import Sidebar from './parts/Sidebar'
 import React from 'react';
+import CartDetail from './pages/cartdetails';
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Dashboard />}/>
         <Route path="/cart" element={<Cart />}/>
+        <Route path="/cart/:id" element={<CartDetail />}/>
     </Routes>
   </Router>
   );

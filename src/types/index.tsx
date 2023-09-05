@@ -10,5 +10,8 @@ export default interface productData {
     category: string;
     thumbnail: string;
     images: string[];
+    quantity: number;
+    total: number;
+    discountedPrice: number;
   }
 

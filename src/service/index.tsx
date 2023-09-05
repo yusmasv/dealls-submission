@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getAllCart, getAllProducts, getCategories } from '../repository';
+import { getAllCart, getAllProducts, getCartById, getCategories, getUserById } from '../repository';
 import productData from '../types';
 
 const getProducts = async (searchParams: string, skip: number, limit: number) => {
@@ -85,16 +85,32 @@ const HandleValidation = async (query: string, category: string, start_range: nu
   
 }
 
-const getCart = async () => {
+const getCart = async (skip: number, limit: number) => {
   const {
       data: carts
-  } = await getAllCart()
+  } = await getAllCart(skip, limit)
   return carts.carts
+}
+
+const getUser = async (id: number) => {
+  const {
+      data: user
+  } = await getUserById(id)
+  return user
+}
+
+const getCartId = async (id: number) => {
+  const {
+      data: cart
+  } = await getCartById(id)
+  return cart
 }
 
 export {
     getProducts,
     getCategoriesType,
     HandleValidation,
-    getCart
+    getCart,
+    getUser,
+    getCartId
 }

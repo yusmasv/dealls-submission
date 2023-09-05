@@ -48,7 +48,7 @@ function FilterModal() {
         <input type="checkbox" id="my_modal_6" className="modal-toggle" />
         <div className="modal">
         <div className="modal-box">
-            <h3 className="font-bold text-lg">Filter products</h3>
+            <p className="font-bold text-lg">Filter products</p>
             <Categories />
             <PriceRange />
             <Brand />
