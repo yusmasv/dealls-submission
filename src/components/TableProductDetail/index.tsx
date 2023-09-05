@@ -42,7 +42,7 @@ const TableProductDetail = ({ data }: { data: productData[] }) => {
                             {product.title}
                         </th>
                         <td className="px-6 py-4">
-                            {product.price}
+                           $ {product.price}
                         </td>
                         <td className="px-6 py-4">
                             {product.quantity}
