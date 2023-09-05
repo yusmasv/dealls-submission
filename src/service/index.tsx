@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getAllProducts, getCategories } from '../repository';
+import { getAllCart, getAllProducts, getCategories } from '../repository';
 import productData from '../types';
 
 const getProducts = async (searchParams: string, skip: number, limit: number) => {
@@ -20,24 +20,26 @@ const getCategoriesType = async () => {
 }
 
 const HandleValidation = async (query: string, category: string, start_range: number, end_range: number, brand: string, skip: number, limit: number) => {
-
+  let filteredDataQuery: productData[] = [];
   let filteredDataCategory: productData[] = [];
   let filteredDataPriceRange: productData[] = [];
   let filteredDataBrand: productData[] = [];
+  let filteredDataPagination: productData[] = [];
   
   const {
     data: products
   } = await getAllProducts(0, 0, query)
+  filteredDataQuery = products.products;
 
   if (category !== '') {
-    products.products.map((item: any, index: any) => {
+   filteredDataQuery.map((item: any, index: any) => {
       if (item.category === category) {
         filteredDataCategory.push(item)
       }
     }
     ) 
   } else {
-    filteredDataCategory = products.products
+    filteredDataCategory = filteredDataQuery
   }
 
 
@@ -65,12 +67,34 @@ const HandleValidation = async (query: string, category: string, start_range: nu
     filteredDataBrand = filteredDataPriceRange
   }
 
-   return filteredDataBrand
+  if (filteredDataBrand.length >= limit) {
+    let counter = 0;
+    filteredDataBrand.map((item, index) => {
+      
+      if (index >= skip && counter < limit) {
+        filteredDataPagination.push(item)
+        counter++
+      }
+    })
+    
+  } else {
+    filteredDataPagination = filteredDataBrand
+  }
+   let length = filteredDataBrand.length
+   return {filteredDataPagination, length}
   
+}
+
+const getCart = async () => {
+  const {
+      data: carts
+  } = await getAllCart()
+  return carts.carts
 }
 
 export {
     getProducts,
     getCategoriesType,
-    HandleValidation
+    HandleValidation,
+    getCart
 }

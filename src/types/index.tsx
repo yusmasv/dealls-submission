@@ -11,3 +11,4 @@ export default interface productData {
     thumbnail: string;
     images: string[];
   }
+

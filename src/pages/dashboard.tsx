@@ -3,6 +3,7 @@ import SearchBar from '../components/Searchbar'
 import Table from '../components/Table'
 import Loader from '../components/Loader'
 import Filter from '../components/Filter/Filter'
+import Status from '../components/Filter/Status'
 import React, { useEffect, useState } from 'react'
 import productData from '../types'
 import { selectBrand, selectCategory, selectEndRange, selectFilterStatus, selectQuery, selectStartRange } from '../slice/filter-slice'
@@ -23,18 +24,19 @@ function Dashboard(): React.JSX.Element {
 
  
   const [skip, setSkip] = useState<number>(0);
-  const [limit, setLimit] = useState<number>(5);
-  const [allProducts, setAllProducts] = useState<productData[]>([])
+  //const [counter, setCounter] = useState<number>(5);
+  const limit: number = 5;
+  const [allProducts, setAllProducts] = useState<productData[]>()
 
   const handlePrevPagination = () => {
-    if (skip !== 0) {
+    if (skip > 0) {
       setSkip(skip-5)
       setentryState(entryState-1)
     }
   }
 
   const handleNextPagination = () => {
-    if (limit !== 0 || limit <= lengthData) {
+    if (skip < lengthData-limit) {
       setSkip(skip+5)
       setentryState(entryState+1)
     }
@@ -45,20 +47,23 @@ function Dashboard(): React.JSX.Element {
     const fetchData = async () => {
       let data = await getProducts(searchParams, 0, 0)
       setlengthData(data.length)
+      setSkip(0)
+      setentryState(1)
      }
   
      fetchData();
   
-  }, [])
+  }, [searchParams, isFiltered])
   
 
   useEffect(() => {
+
     if (isFiltered) {
       const fetchDataFiltered = async () => {
-        let data = await HandleValidation(searchParams, category, parseInt(start_range), parseInt(end_range), brand, skip, limit)
-        setAllProducts(data)
-        setlengthData(data.length)
-        setentryState(1)
+        let { filteredDataPagination, length } = await HandleValidation(searchParams, category, parseInt(start_range), parseInt(end_range), brand, skip, limit)
+        setAllProducts(filteredDataPagination)
+        setlengthData(length)
+        //setentryState(1)
        
        }
     
@@ -66,9 +71,8 @@ function Dashboard(): React.JSX.Element {
 
     } else {
       const fetchData = async () => {
-        let data = await getProducts(searchParams, skip, limit)
-        setAllProducts(data)
-        
+        let products = await getProducts(searchParams, skip, limit)
+        setAllProducts(products)
        }
     
        fetchData();
@@ -80,11 +84,13 @@ function Dashboard(): React.JSX.Element {
   return (
     <div className="overflow-hidden p-4 sm:ml-64">
       <SearchBar />
+      {(isFiltered) ? <Status /> : false }
       <Filter />
+
       {/* <Categories data={categories} /> */}
       { (allProducts) ? <Table data={allProducts}/> : <Loader />}
       <div className="fixed bottom-6 right-6">
-        <span className='mr-5 text-xs'>Showing {entryState} / {Math.ceil(lengthData/5)} entries</span>
+        <span className='mr-5 text-xs'>Page {entryState} / {Math.ceil(lengthData/5)}</span>
         <button type="button" onClick={handlePrevPagination} className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Previous</button>
         <button type="button" onClick={handleNextPagination} className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Next</button>
     </div>
